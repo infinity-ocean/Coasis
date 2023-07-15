@@ -17,6 +17,7 @@ async def mw_getter(**kwargs):
             # todo edu|to understand this select statement and the result
             stmt = select(User, ProfAdjust).filter(User.tg_id == event.id).options(selectinload(User.prof_adj))
             result_u_profadj = await session.scalars(stmt)
+            # todo [ТУТА ВСЁ НАЧИНАЕМП]
             u = result_u_profadj.all()
             '''user with connected profadj'''
             p = u.prof_adj
