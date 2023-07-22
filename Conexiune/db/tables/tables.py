@@ -14,7 +14,7 @@ class User(Base):
     username: Mapped[Optional[str]] = mapped_column(String)
     first_name: Mapped[Optional[str]] = mapped_column(String)
 
-    prof_adj: Mapped['ProfAdjust'] = relationship(back_populates='user')
+    prof_adj: Mapped['ProfAdjust'] = relationship(uselist=False)
 
 
 class ProfAdjust(Base):
@@ -26,5 +26,5 @@ class ProfAdjust(Base):
     # todo photo_id: Mapped[Optional[int]] = mapped_column(Integer)
     name: Mapped[Optional[str]] = mapped_column(String(50))
     descr: Mapped[Optional[str]] = mapped_column(String(824))
-    user: Mapped['User'] = relationship(back_populates='prof_adj')
+    # user: Mapped['User'] = relationship(back_populates='prof_adj')
     # todo geo: Mapped[Optional[str]] = mapped_column()
