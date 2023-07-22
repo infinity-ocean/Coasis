@@ -1,8 +1,12 @@
+from aiogram_dialog import DialogManager
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 from sqlalchemy.orm import selectinload
 
 from Conexiune.db.tables.tables import User, ProfAdjust
+
+
+# from sqlalchemy.orm import selectinload
 
 
 async def mw_getter(**kwargs):
@@ -13,19 +17,18 @@ async def mw_getter(**kwargs):
     #### Transaction
     async with maker() as session:
         async with session.begin():
+            # necessary data: users.id -> subwindows | users.profadjust | profadjust.*
             # todo low|Change to lonely retrieving only ProfAdjust
             # todo edu|to understand this select statement and the result
-            stmt = select(User, ProfAdjust).filter(User.tg_id == event.id).options(selectinload(User.prof_adj))
-            result_u_profadj = await session.scalars(stmt)
-            # todo [ТУТА ВСЁ НАЧИНАЕМП]
-            u = result_u_profadj.all()
+            slct = select(User).options(selectinload(User.prof_adj)).filter(User.tg_id == event.id)
+            raw_u = await session.scalars(slct)
+            u = raw_u.one()
             '''user with connected profadj'''
-            p = u.prof_adj
             #### Writing info for subwindows
-            manager.dialog_data['p_adj'] = p
             manager.dialog_data['u'] = u
             #### Returning answer to mw with
-            #### p:state-filling[0=0.1=>1] stat=stat=dyn
+            #### p:state-filling[0--0.1--1] stat=stat=dyn
+            p = u.prof_adj
             if not p:
                 # inserting empty ProfAdjust linked to user creation
                 session.add(ProfAdjust(user_id=u.id))
@@ -52,9 +55,9 @@ async def mw_getter(**kwargs):
         return widget_filler
 
 
-async def nw_getter(**kwargs):
-    manager = kwargs['dialog_manager']
-    p = manager.dialog_data['p_adj']
+async def nw_getter(manager: DialogManager, **kwargs):
+    # manager = kwargs['dialog_manager']
+    p = manager.dialog_data['u'].p_adj
     if not p.name:
         return {'0_name': True}
     else:
