@@ -61,3 +61,16 @@ async def nw_getter(**kwargs):
         return {'0_name': True}
     else:
         return {'1_name': True, 'name': u.prof_adj.name}
+
+
+async def dw_getter(**kwargs):
+    # manager = kwargs['dialog_manager']
+    dialog_manager = kwargs['dialog_manager']
+    u = dialog_manager.dialog_data['u']
+    # затычка при u; т.к. u.prof_adj = None когда юзер впервые зарег
+    if not u.prof_adj:
+        return {'0_descr': True}
+    elif not u.prof_adj.descr:
+        return {'0_descr': True}
+    else:
+        return {'1_descr': True, 'descr': u.prof_adj.descr}
