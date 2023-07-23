@@ -1,4 +1,3 @@
-from aiogram_dialog import DialogManager
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 from sqlalchemy.orm import selectinload
@@ -24,15 +23,16 @@ async def mw_getter(**kwargs):
             raw_u = await session.scalars(slct)
             u = raw_u.one()
             '''user with connected profadj'''
-            #### Writing info for subwindows
-            manager.dialog_data['u'] = u
             #### Returning answer to mw with
             #### p:state-filling[0--0.1--1] stat=stat=dyn
             p = u.prof_adj
             if not p:
                 # inserting empty ProfAdjust linked to user creation
-                session.add(ProfAdjust(user_id=u.id))
+                await session.merge(ProfAdjust(user_id=u.id))
+                manager.dialog_data['u'] = u
                 return {'fresh_created': True}
+            #### Writing info for subwindows
+            manager.dialog_data['u'] = u
 
     # The prof_adj exists, but is empty
     if not p.name and not p.descr:  # + f-aggg-
@@ -55,10 +55,14 @@ async def mw_getter(**kwargs):
         return widget_filler
 
 
-async def nw_getter(manager: DialogManager, **kwargs):
+async def nw_getter(**kwargs):
     # manager = kwargs['dialog_manager']
-    p = manager.dialog_data['u'].p_adj
-    if not p.name:
+    dialog_manager = kwargs['dialog_manager']
+    u = dialog_manager.dialog_data['u']
+    # затычка при u; т.к. u.prof_adj = None когда юзер впервые зарег
+    if not u.prof_adj:
+        return {'0_name': True}
+    elif not u.prof_adj.name:
         return {'0_name': True}
     else:
-        return {'1_name': True, 'name': p.name}
+        return {'1_name': True, 'name': u.prof_adj.name}

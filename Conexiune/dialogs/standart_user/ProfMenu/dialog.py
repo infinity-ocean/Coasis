@@ -23,8 +23,8 @@ main = Window(
 )
 
 name = Window(
-    Const('Имя не введено. Скорее введи его!', when='0_name'),
-    Const('Имя - {name}', when='1_name'),
+    Const('Имя не введено. Скорее введи его! 4-50 символов, без пробелов.', when='0_name'),
+    Format('Твоё имя - {name}.\n\n Если хочешь поменять его, скинь сообщением новое и я его запишу', when='1_name'),
     MessageInput(name_handler, ContentType.TEXT),
     state=ProfMenuSG.name,
     getter=nw_getter)
