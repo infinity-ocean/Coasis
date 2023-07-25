@@ -20,17 +20,17 @@ async def mw_getter(**kwargs):
             '''user with connected profadj'''
             #### Returning answer to mw with
             #### p:state-filling[0--0.1--1] stat=stat=dyn
-            p = u.prof_adj
-            if not p:
+            if not u.prof_adj:
                 # inserting empty ProfAdjust linked to user creation
                 await session.merge(ProfAdjust(user_id=u.id))
                 manager.dialog_data['u'] = u
                 return {'fresh_created': True}
+            p = u.prof_adj  # ТУТА Я ПОДВИНУЛ НА 5 СТРОК МОЖЕТ СЛОМАТЬСЯ
             #### Writing info for subwindows
             manager.dialog_data['u'] = u
 
     # The prof_adj exists, but is empty
-    if not p.name and not p.descr:  # + f-aggg-
+    if not p.name and not p.descr and not p.sex:  # todo + f-a-gl-
         return {'not_filled': True}
     # The prof_adj has at least 1 point
     else:
@@ -41,6 +41,12 @@ async def mw_getter(**kwargs):
         else:
             widget_filler['name'] = '🟡 Ты пока не заполнил имени'
             widget_filler['name_filled'] = False
+        if p.sex:
+            widget_filler['sex'] = f'🟢 Твой пол - {p.sex}'
+            widget_filler['sex_filled'] = True
+        else:
+            widget_filler['sex'] = '🟡 Ты пока не заполнил свой пол'
+            widget_filler['sex_filled'] = False
         if p.descr:
             widget_filler['descr'] = f'🟢 Твоё описание - {p.descr}'
             widget_filler['descr_filled'] = True
@@ -54,7 +60,7 @@ async def nw_getter(**kwargs):
     # manager = kwargs['dialog_manager']
     dialog_manager = kwargs['dialog_manager']
     u = dialog_manager.dialog_data['u']
-    # затычка при u; т.к. u.prof_adj = None когда юзер впервые зарег
+    # u.prof_adj = None когда юзер впервые зарег
     if not u.prof_adj:
         return {'0_name': True}
     elif not u.prof_adj.name:
@@ -63,10 +69,22 @@ async def nw_getter(**kwargs):
         return {'1_name': True, 'name': u.prof_adj.name}
 
 
+async def sw_getter(**kwargs):
+    manager = kwargs['dialog_manager']
+    u = manager.dialog_data['u']
+    # u.prof_adj = None когда юзер впервые зарег
+    if not u.prof_adj:
+        return {'0_sex': True}
+    elif not u.prof_adj.sex:
+        return {'0_sex': True}
+    else:
+        return {'1_sex': True, 'sex': u.prof_adj.sex}
+
+
 async def dw_getter(**kwargs):
     # manager = kwargs['dialog_manager']
-    dialog_manager = kwargs['dialog_manager']
-    u = dialog_manager.dialog_data['u']
+    manager = kwargs['dialog_manager']
+    u = manager.dialog_data['u']
     # затычка при u; т.к. u.prof_adj = None когда юзер впервые зарег
     if not u.prof_adj:
         return {'0_descr': True}

@@ -23,8 +23,10 @@ class ProfAdjust(Base):
     id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'), unique=True)
 
-    # todo photo_id: Mapped[Optional[int]] = mapped_column(Integer)
+    # file_id: Mapped[Optional[int]] = mapped_column(Integer)
     name: Mapped[Optional[str]] = mapped_column(String(50))
+    # age
+    sex: Mapped[Optional[str]] = mapped_column(String(1))
+    # goal
+    # loc
     descr: Mapped[Optional[str]] = mapped_column(String(824))
-    # user: Mapped['User'] = relationship(back_populates='prof_adj')
-    # todo geo: Mapped[Optional[str]] = mapped_column()
