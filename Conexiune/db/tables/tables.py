@@ -23,10 +23,10 @@ class ProfAdjust(Base):
     id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'), unique=True)
 
-    # file_id: Mapped[Optional[int]] = mapped_column(Integer)
+    photo: Mapped[Optional[str]] = mapped_column(String)
     name: Mapped[Optional[str]] = mapped_column(String(50))
     # age
     sex: Mapped[Optional[str]] = mapped_column(String(1))
-    # goal
+    # goal: Mapped[Optional[str]] = mapped_column(JSONB)  # turn to simple json if errors occurs
     # loc
     descr: Mapped[Optional[str]] = mapped_column(String(824))

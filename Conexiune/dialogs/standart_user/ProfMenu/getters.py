@@ -1,3 +1,5 @@
+from aiogram.enums import ContentType
+from aiogram_dialog.api.entities import MediaAttachment, MediaId
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 from sqlalchemy.orm import selectinload
@@ -30,11 +32,17 @@ async def mw_getter(**kwargs):
             manager.dialog_data['u'] = u
 
     # The prof_adj exists, but is empty
-    if not p.name and not p.descr and not p.sex:  # todo + f-a-gl-
+    if not p.photo and not p.name and not p.descr and not p.sex:  # todo + p-a-gl-
         return {'not_filled': True}
     # The prof_adj has at least 1 point
     else:
         widget_filler = {'at_least_one': True}
+        if p.photo:
+            widget_filler['photo'] = MediaAttachment(ContentType.PHOTO, file_id=MediaId(p.photo))
+            widget_filler['1_photo'] = True
+        else:
+            widget_filler['photo_text'] = '🟡 Ты пока не заполнил фото'
+            widget_filler['0_photo'] = True
         if p.name:
             widget_filler['name'] = f'🟢 Твоё имя - {p.name}'
             widget_filler['name_filled'] = True
@@ -54,6 +62,20 @@ async def mw_getter(**kwargs):
             widget_filler['descr'] = '🟡 Ты пока не заполнил описание'
             widget_filler['descr_filled'] = False
         return widget_filler
+
+
+async def pw_getter(**kwargs):
+    dialog_manager = kwargs['dialog_manager']
+    u = dialog_manager.dialog_data['u']
+    if not u.prof_adj:
+        return {'0_photo': True}
+    elif not u.prof_adj.photo:
+        return {'0_photo': True}
+    else:
+        image = MediaAttachment(
+            ContentType.PHOTO, file_id=MediaId(u.prof_adj.photo)
+        )
+        return {'1_photo': True, 'photo': image}
 
 
 async def nw_getter(**kwargs):

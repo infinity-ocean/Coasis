@@ -10,6 +10,20 @@ from Conexiune.db.tables.tables import ProfAdjust
 from Conexiune.dialogs.standart_user.ProfMenu.states import ProfMenuSG
 
 
+#### PW BLOCK
+async def photo_handler(m: Message, MessageInput, manager: DialogManager):
+    maker: async_sessionmaker[AsyncSession] = manager.middleware_data['session_maker']
+    async with maker() as session:
+        async with session.begin():
+            u = manager.dialog_data['u']
+            # understand how to deal up without slct
+            slct = select(ProfAdjust).filter(ProfAdjust.user_id == u.id)
+            p_raw = await session.scalars(slct)
+            p = p_raw.one()
+            p.photo = m.photo[-1].file_id
+    await manager.switch_to(ProfMenuSG.main)
+
+
 #### NW BLOCK
 async def name_handler(m: Message, MessageInput, manager: DialogManager):
     if re.match(r'^[А-Яа-я\s]{4,50}$', m.text):

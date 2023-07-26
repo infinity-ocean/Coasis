@@ -3,7 +3,7 @@ from aiogram.fsm.state import StatesGroup, State
 
 class ProfMenuSG(StatesGroup):
     main = State()
-    # todo photo = State()
+    photo = State()
     name = State()
     #age
     sex = State()
