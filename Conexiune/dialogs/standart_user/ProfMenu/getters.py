@@ -45,22 +45,22 @@ async def mw_getter(**kwargs):
             widget_filler['0_photo'] = True
         if p.name:
             widget_filler['name'] = f'🟢 Твоё имя - {p.name}'
-            widget_filler['name_filled'] = True
+            widget_filler['1_name'] = True
         else:
             widget_filler['name'] = '🟡 Ты пока не заполнил имени'
-            widget_filler['name_filled'] = False
+            widget_filler['0_name'] = True
         if p.sex:
             widget_filler['sex'] = f'🟢 Твой пол - {p.sex}'
-            widget_filler['sex_filled'] = True
+            widget_filler['1_sex'] = True
         else:
             widget_filler['sex'] = '🟡 Ты пока не заполнил свой пол'
-            widget_filler['sex_filled'] = False
+            widget_filler['0_sex'] = True
         if p.descr:
             widget_filler['descr'] = f'🟢 Твоё описание - {p.descr}'
-            widget_filler['descr_filled'] = True
+            widget_filler['1_descr'] = True
         else:
             widget_filler['descr'] = '🟡 Ты пока не заполнил описание'
-            widget_filler['descr_filled'] = False
+            widget_filler['0_descr'] = True
         return widget_filler
 
 

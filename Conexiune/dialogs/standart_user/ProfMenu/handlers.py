@@ -76,7 +76,7 @@ async def w_select(callback: CallbackQuery, button: Button,
 
 #### DW BLOCK
 async def descr_handler(m: Message, MessageInput, manager: DialogManager):
-    if re.match(r'^[А-Яа-я\s]{10,520}$', m.text):
+    if re.match(r'^[А-Яа-я\s,.-]{10,520}$', m.text):
         maker: async_sessionmaker[AsyncSession] = manager.middleware_data['session_maker']
         async with maker() as session:
             async with session.begin():
@@ -92,4 +92,4 @@ async def descr_handler(m: Message, MessageInput, manager: DialogManager):
 
         await manager.switch_to(ProfMenuSG.main)
     else:
-        await m.reply('Имя не подходит. Используй только русские буквы')
+        await m.reply('Описание не подходит. Используй только русские буквы')

@@ -14,7 +14,7 @@ main = Window(
     Const('Только что твоя анкета была создана, но она пока пуста. С чего начнём?', when='fresh_created'),
     Const('Твоя анкета пуста. Ты пока что ещё ничего не заполнил.[fresh_created]', when='not_filled'),
     DynamicMedia('photo', when='1_photo'),
-    Format('{photo_text}\n\n', when='0_photo'),
+    Format('{photo_text}\n', when='0_photo'),
     Format('{name}\n\n{sex}\n\n{descr}', when='at_least_one'),
     Group(
         SwitchTo(Const('Фото'), id='to_photo', state=ProfMenuSG.photo),
