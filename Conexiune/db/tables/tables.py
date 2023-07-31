@@ -25,7 +25,7 @@ class ProfAdjust(Base):
 
     photo: Mapped[Optional[str]] = mapped_column(String)
     name: Mapped[Optional[str]] = mapped_column(String(50))
-    # age
+    age: Mapped[Optional[int]] = mapped_column(Integer)
     sex: Mapped[Optional[str]] = mapped_column(String(1))
     # goal: Mapped[Optional[str]] = mapped_column(JSONB)  # turn to simple json if errors occurs
     # loc

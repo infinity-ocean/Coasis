@@ -8,65 +8,55 @@ from Conexiune.db.tables.tables import User, ProfAdjust
 
 
 async def mw_getter(**kwargs):
-    #### Variables receiving
     maker: async_sessionmaker[AsyncSession] = kwargs['session_maker']
     event = kwargs['event_from_user']
     manager = kwargs['dialog_manager']
-    #### Transaction
     async with maker() as session:
         async with session.begin():
-            # necessary data: users.id -> subwindows | users.profadjust | profadjust.*
-            slct = select(User).options(selectinload(User.prof_adj)).filter(User.tg_id == event.id)
+            slct = select(User).where(User.tg_id == event.id).options(selectinload(User.prof_adj))
             raw_u = await session.scalars(slct)
             u = raw_u.one()
             '''user with connected profadj'''
-            #### Returning answer to mw with
-            #### p:state-filling[0--0.1--1] stat=stat=dyn
+            # return stat-stat-dyn
             if not u.prof_adj:
                 # inserting empty ProfAdjust linked to user creation
                 await session.merge(ProfAdjust(user_id=u.id))
                 manager.dialog_data['u'] = u
                 return {'fresh_created': True}
-            p = u.prof_adj  # ТУТА Я ПОДВИНУЛ НА 5 СТРОК МОЖЕТ СЛОМАТЬСЯ
-            #### Writing info for subwindows
+            p = u.prof_adj
             manager.dialog_data['u'] = u
-
-    # The prof_adj exists, but is empty
-    if not p.photo and not p.name and not p.descr and not p.sex:  # todo + p-a-gl-
+    if not p.photo and not p.name and not p.age and not p.descr and not p.sex:  # todo + ----l-
         return {'not_filled': True}
-    # The prof_adj has at least 1 point
     else:
         widget_filler = {'at_least_one': True}
         if p.photo:
             widget_filler['photo'] = MediaAttachment(ContentType.PHOTO, file_id=MediaId(p.photo))
             widget_filler['1_photo'] = True
-        else:
+        elif not p.photo:
             widget_filler['photo_text'] = '🟡 Ты пока не заполнил фото'
             widget_filler['0_photo'] = True
         if p.name:
             widget_filler['name'] = f'🟢 Твоё имя - {p.name}'
-            widget_filler['1_name'] = True
-        else:
+        elif not p.name:
             widget_filler['name'] = '🟡 Ты пока не заполнил имени'
-            widget_filler['0_name'] = True
+        if p.age:
+            widget_filler['age'] = f'🟢 Твой возраст - {p.age}'
+        elif not p.age:
+            widget_filler['age'] = '🟡 Ты пока не заполнил возраст'
         if p.sex:
             widget_filler['sex'] = f'🟢 Твой пол - {p.sex}'
-            widget_filler['1_sex'] = True
-        else:
+        elif not p.sex:
             widget_filler['sex'] = '🟡 Ты пока не заполнил свой пол'
-            widget_filler['0_sex'] = True
         if p.descr:
             widget_filler['descr'] = f'🟢 Твоё описание - {p.descr}'
-            widget_filler['1_descr'] = True
-        else:
+        elif not p.descr:
             widget_filler['descr'] = '🟡 Ты пока не заполнил описание'
-            widget_filler['0_descr'] = True
         return widget_filler
 
 
 async def pw_getter(**kwargs):
-    dialog_manager = kwargs['dialog_manager']
-    u = dialog_manager.dialog_data['u']
+    manager = kwargs['dialog_manager']
+    u = manager.dialog_data['u']
     if not u.prof_adj:
         return {'0_photo': True}
     elif not u.prof_adj.photo:
@@ -79,10 +69,8 @@ async def pw_getter(**kwargs):
 
 
 async def nw_getter(**kwargs):
-    # manager = kwargs['dialog_manager']
-    dialog_manager = kwargs['dialog_manager']
-    u = dialog_manager.dialog_data['u']
-    # u.prof_adj = None когда юзер впервые зарег
+    manager = kwargs['dialog_manager']
+    u = manager.dialog_data['u']
     if not u.prof_adj:
         return {'0_name': True}
     elif not u.prof_adj.name:
@@ -91,10 +79,19 @@ async def nw_getter(**kwargs):
         return {'1_name': True, 'name': u.prof_adj.name}
 
 
+async def aw_getter(**kwargs):
+    manager = kwargs['dialog_manager']
+    u = manager.dialog_data['u']
+    if not u.prof_adj:
+        return {'0_age': True}
+    elif not u.prof_adj.age:
+        return {'0_age': True}
+    else:
+        return {'1_age': True, 'age': u.prof_adj.age}
+
 async def sw_getter(**kwargs):
     manager = kwargs['dialog_manager']
     u = manager.dialog_data['u']
-    # u.prof_adj = None когда юзер впервые зарег
     if not u.prof_adj:
         return {'0_sex': True}
     elif not u.prof_adj.sex:
@@ -104,10 +101,8 @@ async def sw_getter(**kwargs):
 
 
 async def dw_getter(**kwargs):
-    # manager = kwargs['dialog_manager']
     manager = kwargs['dialog_manager']
     u = manager.dialog_data['u']
-    # затычка при u; т.к. u.prof_adj = None когда юзер впервые зарег
     if not u.prof_adj:
         return {'0_descr': True}
     elif not u.prof_adj.descr:
