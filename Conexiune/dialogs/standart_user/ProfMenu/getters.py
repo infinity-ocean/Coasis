@@ -11,19 +11,19 @@ async def mw_getter(**kwargs):
     session: AsyncSession = kwargs['session']
     event = kwargs['event_from_user']
     manager = kwargs['dialog_manager']
+    # select user
     async with session.begin():
         slct = select(User).where(User.tg_id == event.id).options(selectinload(User.prof_adj))
         raw_u = await session.scalars(slct)
-        u = raw_u.one()
-        '''user with connected profadj'''
-        # return stat-stat-dyn
-        if not u.prof_adj:
-            # inserting empty ProfAdjust linked to user creation
-            await session.merge(ProfAdjust(user_id=u.id))
-            manager.dialog_data['u'] = u
+        u = raw_u.one_or_none()
+        if not u:
+            # insert u with p
+            _u = User(tg_id=event.id, username=event.username, first_name=event.first_name)
+            _u.prof_adj = ProfAdjust()
+            await session.merge(_u)
             return {'fresh_created': True}
-        p = u.prof_adj
-        manager.dialog_data['u'] = u
+    manager.dialog_data['u'] = u
+    p = u.prof_adj
     if not p.photo and not p.name and not p.age and not p.descr and not p.sex:  # todo + ----l-
         return {'not_filled': True}
     else:
@@ -56,7 +56,9 @@ async def mw_getter(**kwargs):
 async def pw_getter(**kwargs):
     manager = kwargs['dialog_manager']
     u = manager.dialog_data['u']
-    if not u.prof_adj:
+    if not u:
+        return {'0_photo': True}
+    elif not u.prof_adj:
         return {'0_photo': True}
     elif not u.prof_adj.photo:
         return {'0_photo': True}
@@ -70,7 +72,9 @@ async def pw_getter(**kwargs):
 async def nw_getter(**kwargs):
     manager = kwargs['dialog_manager']
     u = manager.dialog_data['u']
-    if not u.prof_adj:
+    if not u:
+        return {'0_name': True}
+    elif not u.prof_adj:
         return {'0_name': True}
     elif not u.prof_adj.name:
         return {'0_name': True}
@@ -81,17 +85,22 @@ async def nw_getter(**kwargs):
 async def aw_getter(**kwargs):
     manager = kwargs['dialog_manager']
     u = manager.dialog_data['u']
-    if not u.prof_adj:
+    if not u:
+        return {'0_age': True}
+    elif not u.prof_adj:
         return {'0_age': True}
     elif not u.prof_adj.age:
         return {'0_age': True}
     else:
         return {'1_age': True, 'age': u.prof_adj.age}
 
+
 async def sw_getter(**kwargs):
     manager = kwargs['dialog_manager']
     u = manager.dialog_data['u']
-    if not u.prof_adj:
+    if not u:
+        return {'0_sex': True}
+    elif not u.prof_adj:
         return {'0_sex': True}
     elif not u.prof_adj.sex:
         return {'0_sex': True}
@@ -102,7 +111,9 @@ async def sw_getter(**kwargs):
 async def dw_getter(**kwargs):
     manager = kwargs['dialog_manager']
     u = manager.dialog_data['u']
-    if not u.prof_adj:
+    if not u:
+        return {'0_descr': True}
+    elif not u.prof_adj:
         return {'0_descr': True}
     elif not u.prof_adj.descr:
         return {'0_descr': True}
