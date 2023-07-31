@@ -1,30 +1,29 @@
 from aiogram.enums import ContentType
 from aiogram_dialog.api.entities import MediaAttachment, MediaId
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from Conexiune.db.tables.tables import User, ProfAdjust
 
 
 async def mw_getter(**kwargs):
-    maker: async_sessionmaker[AsyncSession] = kwargs['session_maker']
+    session: AsyncSession = kwargs['session']
     event = kwargs['event_from_user']
     manager = kwargs['dialog_manager']
-    async with maker() as session:
-        async with session.begin():
-            slct = select(User).where(User.tg_id == event.id).options(selectinload(User.prof_adj))
-            raw_u = await session.scalars(slct)
-            u = raw_u.one()
-            '''user with connected profadj'''
-            # return stat-stat-dyn
-            if not u.prof_adj:
-                # inserting empty ProfAdjust linked to user creation
-                await session.merge(ProfAdjust(user_id=u.id))
-                manager.dialog_data['u'] = u
-                return {'fresh_created': True}
-            p = u.prof_adj
+    async with session.begin():
+        slct = select(User).where(User.tg_id == event.id).options(selectinload(User.prof_adj))
+        raw_u = await session.scalars(slct)
+        u = raw_u.one()
+        '''user with connected profadj'''
+        # return stat-stat-dyn
+        if not u.prof_adj:
+            # inserting empty ProfAdjust linked to user creation
+            await session.merge(ProfAdjust(user_id=u.id))
             manager.dialog_data['u'] = u
+            return {'fresh_created': True}
+        p = u.prof_adj
+        manager.dialog_data['u'] = u
     if not p.photo and not p.name and not p.age and not p.descr and not p.sex:  # todo + ----l-
         return {'not_filled': True}
     else:

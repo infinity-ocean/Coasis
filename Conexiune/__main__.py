@@ -9,7 +9,7 @@ from Conexiune.db.infrastructure import create_engine, create_session_maker
 from Conexiune.db.tables.base import Base
 from Conexiune.dialogs.standart_user.ProfMenu.dialog import prof_dialog
 from Conexiune.handlers.start import start
-from Conexiune.middlewares.registration import RegistrationMiddleware
+from Conexiune.middlewares.registration import db_middleware
 
 
 # logger = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ async def start_bot():
     # logger.error("Starting bot...")
     #### db
     engine = create_engine(conf.db.build_connection_str())
-    session_maker = create_session_maker(engine)
+    maker = create_session_maker(engine)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     #### bot
@@ -31,12 +31,12 @@ async def start_bot():
     dp = Dispatcher()
     dp.message.register(start, CommandStart())
     #### mdw
-    dp.message.middleware.register(RegistrationMiddleware())
-    dp.callback_query.middleware.register(RegistrationMiddleware())
+    dp.message.middleware(db_middleware())
+    dp.callback_query.middleware(db_middleware())
     #### dialogs
     dp.include_router(prof_dialog)
     setup_dialogs(dp)
-    await dp.start_polling(bot, session_maker=session_maker)
+    await dp.start_polling(bot, maker=maker)
 
 
 if __name__ == '__main__':
