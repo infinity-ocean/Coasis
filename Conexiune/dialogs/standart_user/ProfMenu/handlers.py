@@ -45,6 +45,24 @@ async def name_handler(m: Message, MessageInput, manager: DialogManager):
         await m.reply('Имя не подходит. Используй только русские буквы')
 
 
+#### AW BLOCK
+async def age_handler(m: Message, MessageInput, manager: DialogManager):
+    if re.match(r'^(1[89]|[2-5][0-9]|60)$', m.text):
+        maker: async_sessionmaker[AsyncSession] = manager.middleware_data['session_maker']
+        async with maker() as session:
+            async with session.begin():
+                u = manager.dialog_data['u']
+                # understand how to deal up without slct
+                slct = select(ProfAdjust).filter(ProfAdjust.user_id == u.id)
+                p_raw = await session.scalars(slct)
+                p = p_raw.one()
+                p.age = int(m.text)
+
+        await manager.switch_to(ProfMenuSG.main)
+    else:
+        await m.reply('Неправильный возраст. Принимаются только цифры')
+
+
 #### SW BLOCK
 async def m_select(callback: CallbackQuery, button: Button,
                    manager: DialogManager):
@@ -76,7 +94,7 @@ async def w_select(callback: CallbackQuery, button: Button,
 
 #### DW BLOCK
 async def descr_handler(m: Message, MessageInput, manager: DialogManager):
-    if re.match(r'^[А-Яа-я\s]{10,520}$', m.text):
+    if re.match(r'^[А-Яа-я\s,.-]{10,520}$', m.text):
         maker: async_sessionmaker[AsyncSession] = manager.middleware_data['session_maker']
         async with maker() as session:
             async with session.begin():
@@ -92,4 +110,4 @@ async def descr_handler(m: Message, MessageInput, manager: DialogManager):
 
         await manager.switch_to(ProfMenuSG.main)
     else:
-        await m.reply('Имя не подходит. Используй только русские буквы')
+        await m.reply('Описание не подходит. Используй только русские буквы')
