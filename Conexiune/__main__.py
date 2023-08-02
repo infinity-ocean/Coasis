@@ -5,8 +5,8 @@ from aiogram.filters import CommandStart
 from aiogram_dialog import setup_dialogs
 
 from Conexiune.config import Configuration
-from Conexiune.db.infrastructure import create_engine, create_session_maker
-from Conexiune.db.tables.base import Base
+from Conexiune.database.infrastructure import create_engine, create_session_maker
+from Conexiune.database.tables.base import Base
 from Conexiune.dialogs.standart_user.ProfMenu.dialog import prof_dialog
 from Conexiune.handlers.start import start
 from Conexiune.middlewares.registration import db_middleware
@@ -21,10 +21,11 @@ async def start_bot():
     # logging.basicConfig(level=conf.logging_level,
     #                     format="%(name)s - %(message)s")
     # logger.error("Starting bot...")
-    #### db
+    #### database
     engine = create_engine(conf.db.build_connection_str())
     maker = create_session_maker(engine)
     async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     #### bot
     bot = Bot(conf.bot.token)

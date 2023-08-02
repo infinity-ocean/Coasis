@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from Conexiune.db.tables.tables import User, ProfAdjust
+from Conexiune.database.tables.tables import User, ProfAdjust
 
 
 async def mw_getter(**kwargs):
@@ -62,7 +62,7 @@ async def pw_getter(**kwargs):
         return {'0_photo': True}
     elif not u.prof_adj.photo:
         return {'0_photo': True}
-    else:
+    elif u.prof_adj.photo:
         image = MediaAttachment(
             ContentType.PHOTO, file_id=MediaId(u.prof_adj.photo)
         )

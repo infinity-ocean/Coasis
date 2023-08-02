@@ -4,9 +4,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 from Conexiune.config import Configuration
-from Conexiune.db.infrastructure import create_engine, create_session_maker
-from Conexiune.db.tables.base import Base
-from Conexiune.db.tables.tables import User
+from Conexiune.database.infrastructure import create_engine, create_session_maker
+from Conexiune.database.tables.base import Base
+from Conexiune.database.tables.tables import User
 
 
 async def test():

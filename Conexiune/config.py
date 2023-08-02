@@ -16,7 +16,7 @@ class DatabaseConfig:
     user: str = getenv("POSTGRES_USER", "docker")
     passwd: str = getenv("POSTGRES_PASSWORD", None)
     port: int = int(getenv("POSTGRES_PORT", 5432))
-    host: str = getenv("POSTGRES_HOST", "db")
+    host: str = getenv("POSTGRES_HOST", "database")
 
     driver: str = "asyncpg"
     database_system: str = "postgresql"

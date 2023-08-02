@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy import BigInteger, String, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from Conexiune.db.tables.base import Base
+from Conexiune.database.tables.base import Base
 
 
 class User(Base):
@@ -28,5 +28,6 @@ class ProfAdjust(Base):
     age: Mapped[Optional[int]] = mapped_column(Integer)
     sex: Mapped[Optional[str]] = mapped_column(String(1))
     # goal: Mapped[Optional[str]] = mapped_column(JSONB)  # turn to simple json if errors occurs
-    # loc
+    # latitude: Mapped[Optional[float]] = mapped_column(Float)
+    # longitude: Mapped[Optional[float]] = mapped_column(Float)
     descr: Mapped[Optional[str]] = mapped_column(String(824))

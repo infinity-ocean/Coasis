@@ -6,7 +6,7 @@ from aiogram_dialog.widgets.kbd import Button
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from Conexiune.db.tables.tables import ProfAdjust
+from Conexiune.database.tables.tables import ProfAdjust
 from Conexiune.dialogs.standart_user.ProfMenu.states import ProfMenuSG
 
 
@@ -15,8 +15,7 @@ async def photo_handler(m: Message, MessageInput, manager: DialogManager):
     session: AsyncSession = manager.middleware_data['session']
     async with session.begin():
         u = manager.dialog_data['u']
-        # understand how to deal up without slct
-        slct = select(ProfAdjust).filter(ProfAdjust.user_id == u.id)
+        slct = select(ProfAdjust).filter(ProfAdjust.user_id == u.id) # w/o slct
         p_raw = await session.scalars(slct)
         p = p_raw.one()
         p.photo = m.photo[-1].file_id
@@ -29,14 +28,10 @@ async def name_handler(m: Message, MessageInput, manager: DialogManager):
         session: AsyncSession = manager.middleware_data['session']
         async with session.begin():
             u = manager.dialog_data['u']
-            # understand how to deal up without slct
             slct = select(ProfAdjust).filter(ProfAdjust.user_id == u.id)
             p_raw = await session.scalars(slct)
             p = p_raw.one()
-            if not p.name:
-                p.name = m.text
-            else:
-                p.name = m.text
+            p.name = m.text
         await manager.switch_to(ProfMenuSG.main)
     else:
         await m.reply('Имя не подходит. Используй только русские буквы')
@@ -48,7 +43,6 @@ async def age_handler(m: Message, MessageInput, manager: DialogManager):
         session: AsyncSession = manager.middleware_data['session']
         async with session.begin():
             u = manager.dialog_data['u']
-            # understand how to deal up without slct
             slct = select(ProfAdjust).filter(ProfAdjust.user_id == u.id)
             p_raw = await session.scalars(slct)
             p = p_raw.one()
@@ -65,7 +59,6 @@ async def m_select(callback: CallbackQuery, button: Button,
     session: AsyncSession = manager.middleware_data['session']
     async with session.begin():
         u = manager.dialog_data['u']
-        # understand how to deal up without slct
         slct = select(ProfAdjust).filter(ProfAdjust.user_id == u.id)
         p_raw = await session.scalars(slct)
         p = p_raw.one()
@@ -78,7 +71,6 @@ async def w_select(callback: CallbackQuery, button: Button,
     session: AsyncSession = manager.middleware_data['session']
     async with session.begin():
         u = manager.dialog_data['u']
-        # understand how to deal up without slct
         slct = select(ProfAdjust).filter(ProfAdjust.user_id == u.id)
         p_raw = await session.scalars(slct)
         p = p_raw.one()
@@ -92,7 +84,6 @@ async def descr_handler(m: Message, MessageInput, manager: DialogManager):
         session: AsyncSession = manager.middleware_data['session']
         async with session.begin():
             u = manager.dialog_data['u']
-            # understand how to deal up without slct
             slct = select(ProfAdjust).filter(ProfAdjust.user_id == u.id)
             p_raw = await session.scalars(slct)
             p = p_raw.one()
