@@ -11,20 +11,22 @@ async def mw_getter(**kwargs):
     session: AsyncSession = kwargs['session']
     event = kwargs['event_from_user']
     manager = kwargs['dialog_manager']
-    # select user
     async with session.begin():
         slct = select(User).where(User.tg_id == event.id).options(selectinload(User.prof_adj))
         raw_u = await session.scalars(slct)
         u = raw_u.one_or_none()
         if not u:
-            # insert u with p
-            _u = User(tg_id=event.id, username=event.username, first_name=event.first_name)
-            _u.prof_adj = ProfAdjust()
-            await session.merge(_u)
+            slct_u_reg = User(tg_id=event.id, username=event.username, first_name=event.first_name)
+            slct_u_reg.prof_adj = ProfAdjust()
+            await session.merge(slct_u_reg)
+            slct_u_new = select(User).where(User.tg_id == event.id).options(selectinload(User.prof_adj))
+            _u_new = await session.scalars(slct_u_new)
+            u_new = _u_new.one_or_none()
+            manager.dialog_data['u'] = u_new
             return {'fresh_created': True}
     manager.dialog_data['u'] = u
     p = u.prof_adj
-    if not p.photo and not p.name and not p.age and not p.descr and not p.sex:  # todo + ----l-
+    if not p.photo and not p.name and not p.age and not p.sex and not p.location and not p.descr:  # todo + ----l-
         return {'not_filled': True}
     else:
         widget_filler = {'at_least_one': True}
@@ -46,6 +48,10 @@ async def mw_getter(**kwargs):
             widget_filler['sex'] = f'🟢 Твой пол - {p.sex}'
         elif not p.sex:
             widget_filler['sex'] = '🟡 Ты пока не заполнил свой пол'
+        if p.latitude:
+            widget_filler['loc'] = f'🟢 Твоя локация - {p.location}'
+        elif not p.latitude:
+            widget_filler['loc'] = f'🟡 Ты пока не заполнил свою локацию'
         if p.descr:
             widget_filler['descr'] = f'🟢 Твоё описание - {p.descr}'
         elif not p.descr:
@@ -106,6 +112,18 @@ async def sw_getter(**kwargs):
         return {'0_sex': True}
     else:
         return {'1_sex': True, 'sex': u.prof_adj.sex}
+
+
+async def lw_getter(**kwargs):
+    u = kwargs['dialog_manager'].dialog_data['u']
+    if not u:
+        return {'0_loc': True}
+    elif not u.prof_adj:
+        return {'0_loc': True}
+    elif not u.prof_adj.location:
+        return {'0_loc': True}
+    else:
+        return {'1_loc': True, 'loc': u.prof_adj.location}
 
 
 async def dw_getter(**kwargs):

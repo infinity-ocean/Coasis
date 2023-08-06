@@ -7,5 +7,5 @@ class ProfMenuSG(StatesGroup):
     name = State()
     age = State()
     sex = State()
-    # todo geo = State()
+    loc = State()
     descr = State()
