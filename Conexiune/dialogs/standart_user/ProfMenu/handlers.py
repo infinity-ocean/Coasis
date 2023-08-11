@@ -8,7 +8,7 @@ from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from Conexiune.database.tables.tables import ProfAdjust
-from Conexiune.dialogs.standart_user.ProfMenu.states import ProfMenuSG
+from Conexiune.dialogs.standart_user.ProfMenu.states import ProfSG
 from dialogs.standart_user.ProfMenu.location_api import coords_to_location
 
 
@@ -19,7 +19,7 @@ async def photo_handler(m: Message, MessageInput, manager: DialogManager):
         u = manager.dialog_data['u']
         upd = update(ProfAdjust).values(photo=m.photo[-1].file_id).filter(ProfAdjust.user_id == u.id)
         await session.execute(upd)
-    await manager.switch_to(ProfMenuSG.main)
+    await manager.switch_to(ProfSG.main)
 
 
 #### NW BLOCK
@@ -30,7 +30,7 @@ async def name_handler(m: Message, MessageInput, manager: DialogManager):
             u = manager.dialog_data['u']
             upd = update(ProfAdjust).values(name=m.text).filter(ProfAdjust.user_id == u.id)
             await session.execute(upd)
-        await manager.switch_to(ProfMenuSG.main)
+        await manager.switch_to(ProfSG.main)
     else:
         await m.reply('Имя не подходит. Используй только русские буквы')
 
@@ -43,7 +43,7 @@ async def age_handler(m: Message, MessageInput, manager: DialogManager):
             u = manager.dialog_data['u']
             upd = update(ProfAdjust).values(age=int(m.text)).filter(ProfAdjust.user_id == u.id)
             await session.execute(upd)
-        await manager.switch_to(ProfMenuSG.main)
+        await manager.switch_to(ProfSG.main)
     else:
         await m.reply('Неправильный возраст. Принимаются только цифры')
 
@@ -56,7 +56,7 @@ async def m_select(callback: CallbackQuery, button: Button,
         u = manager.dialog_data['u']
         upd = update(ProfAdjust).values(sex='М').filter(ProfAdjust.user_id == u.id)
         await session.execute(upd)
-    await manager.switch_to(ProfMenuSG.main)
+    await manager.switch_to(ProfSG.main)
 
 
 async def w_select(callback: CallbackQuery, button: Button,
@@ -66,7 +66,7 @@ async def w_select(callback: CallbackQuery, button: Button,
         u = manager.dialog_data['u']
         upd = update(ProfAdjust).values(sex='Ж').filter(ProfAdjust.user_id == u.id)
         await session.execute(upd)
-    await manager.switch_to(ProfMenuSG.main)
+    await manager.switch_to(ProfSG.main)
 
 
 #### LW BLOCK
@@ -79,7 +79,7 @@ async def loc_handler(m: Message, MessageInput, manager: DialogManager):
         upd = update(ProfAdjust).values(location=loc, latitude=l.latitude, longitude=l.longitude).filter(ProfAdjust.user_id == u.id)
         await session.execute(upd)
     await m.chat.delete_message(manager.dialog_data['loc_msg_id'])
-    await manager.switch_to(ProfMenuSG.main)
+    await manager.switch_to(ProfSG.main)
 
 
 async def send_loc_kbd(callback: CallbackQuery, button: Button,
@@ -101,6 +101,6 @@ async def descr_handler(m: Message, MessageInput, manager: DialogManager):
             u = manager.dialog_data['u']
             upd = update(ProfAdjust).values(descr=m.text).filter(ProfAdjust.user_id == u.id)
             await session.execute(upd)
-        await manager.switch_to(ProfMenuSG.main)
+        await manager.switch_to(ProfSG.main)
     else:
         await m.reply('Описание не подходит. Используй только русские буквы')

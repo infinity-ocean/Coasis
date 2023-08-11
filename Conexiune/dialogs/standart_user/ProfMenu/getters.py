@@ -26,7 +26,7 @@ async def mw_getter(**kwargs):
             return {'fresh_created': True}
     manager.dialog_data['u'] = u
     p = u.prof_adj
-    if not p.photo and not p.name and not p.age and not p.sex and not p.location and not p.descr:  # todo + ----l-
+    if not p.photo and not p.name and not p.age and not p.sex and not p.location and not p.descr:
         return {'not_filled': True}
     else:
         widget_filler = {'at_least_one': True}
@@ -84,7 +84,7 @@ async def nw_getter(**kwargs):
         return {'0_name': True}
     elif not u.prof_adj.name:
         return {'0_name': True}
-    else:
+    elif u.prof_adj.name:
         return {'1_name': True, 'name': u.prof_adj.name}
 
 
@@ -97,7 +97,7 @@ async def aw_getter(**kwargs):
         return {'0_age': True}
     elif not u.prof_adj.age:
         return {'0_age': True}
-    else:
+    elif u.prof_adj.age:
         return {'1_age': True, 'age': u.prof_adj.age}
 
 
@@ -110,7 +110,7 @@ async def sw_getter(**kwargs):
         return {'0_sex': True}
     elif not u.prof_adj.sex:
         return {'0_sex': True}
-    else:
+    elif u.prof_adj.sex:
         return {'1_sex': True, 'sex': u.prof_adj.sex}
 
 
@@ -122,7 +122,7 @@ async def lw_getter(**kwargs):
         return {'0_loc': True}
     elif not u.prof_adj.location:
         return {'0_loc': True}
-    else:
+    elif u.prof_adj.location:
         return {'1_loc': True, 'loc': u.prof_adj.location}
 
 
@@ -135,5 +135,5 @@ async def dw_getter(**kwargs):
         return {'0_descr': True}
     elif not u.prof_adj.descr:
         return {'0_descr': True}
-    else:
+    elif u.prof_adj.descr:
         return {'1_descr': True, 'descr': u.prof_adj.descr}

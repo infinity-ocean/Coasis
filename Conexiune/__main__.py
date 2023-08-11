@@ -1,6 +1,6 @@
 import asyncio
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot
 from aiogram.filters import CommandStart
 from aiogram_dialog import setup_dialogs
 
@@ -10,6 +10,7 @@ from Conexiune.database.tables.base import Base
 from Conexiune.dialogs.standart_user.ProfMenu.dialog import prof_dialog
 from Conexiune.handlers.start import start
 from Conexiune.middlewares.registration import db_middleware
+from api import setup_dispatcher
 
 
 # logger = logging.getLogger(__name__)
@@ -29,7 +30,7 @@ async def start_bot():
         await conn.run_sync(Base.metadata.create_all)
     #### bot
     bot = Bot(conf.bot.token)
-    dp = Dispatcher()
+    dp = setup_dispatcher()
     dp.message.register(start, CommandStart())
     #### mdw
     dp.message.middleware(db_middleware())

@@ -9,7 +9,7 @@ from Conexiune.dialogs.standart_user.ProfMenu.getters import mw_getter, nw_gette
     aw_getter, lw_getter
 from Conexiune.dialogs.standart_user.ProfMenu.handlers import name_handler, descr_handler, m_select, w_select, \
     photo_handler, age_handler, send_loc_kbd, loc_handler
-from Conexiune.dialogs.standart_user.ProfMenu.states import ProfMenuSG
+from Conexiune.dialogs.standart_user.ProfMenu.states import ProfSG
 
 main = Window(
     Const('Только что твоя анкета была создана, но она пока пуста. С чего начнём?', when='fresh_created'),
@@ -18,16 +18,16 @@ main = Window(
     Format('{photo_text}\n', when='0_photo'),
     Format('{name}\n\n{age}\n\n{sex}\n\n{loc}\n\n{descr}', when='at_least_one'),
     Group(
-        SwitchTo(Const('Фото'), id='to_photo', state=ProfMenuSG.photo),
-        SwitchTo(Const('Имя'), id='to_name', state=ProfMenuSG.name),
-        SwitchTo(Const('Возраст'), id='to_age', state=ProfMenuSG.age),
-        SwitchTo(Const('Пол'), id='to_sex', state=ProfMenuSG.sex),
-        SwitchTo(Const('Локация'), id='to_loc', state=ProfMenuSG.loc),
-        SwitchTo(Const('Описание'), id='to_descr', state=ProfMenuSG.descr),
+        SwitchTo(Const('Фото'), id='to_photo', state=ProfSG.photo),
+        SwitchTo(Const('Имя'), id='to_name', state=ProfSG.name),
+        SwitchTo(Const('Возраст'), id='to_age', state=ProfSG.age),
+        SwitchTo(Const('Пол'), id='to_sex', state=ProfSG.sex),
+        SwitchTo(Const('Локация'), id='to_loc', state=ProfSG.loc),
+        SwitchTo(Const('Описание'), id='to_descr', state=ProfSG.descr),
         Button(Const('Выложить'), id='send'),
         width=2
     ),
-    state=ProfMenuSG.main,
+    state=ProfSG.main,
     getter=mw_getter
 )
 
@@ -36,21 +36,21 @@ photo = Window(
     Const('У тебя пока нету фотографии. Скинь - и я привяжу её к твоей анкете.', when='0_photo'),
     Format('У тебя уже есть фоточка (сверху), если хочешь её поменять - скинь новую.', when='1_photo'),
     MessageInput(photo_handler, ContentType.PHOTO),
-    state=ProfMenuSG.photo,
+    state=ProfSG.photo,
     getter=pw_getter)
 
 name = Window(
     Const('Имя не введено. Скорее введи его! [4-50 символов]', when='0_name'),
     Format('Твоё имя - {name}.\n\n Если хочешь поменять его, скинь сообщением новое и я его запишу.', when='1_name'),
     MessageInput(name_handler, ContentType.TEXT),
-    state=ProfMenuSG.name,
+    state=ProfSG.name,
     getter=nw_getter)
 
 age = Window(
     Const('Введи свой возраст, пожалуйста', when='0_age'),
     Format('Твой возраст - {age}.\n\n Если хочешь поменять его, то скинь сообщением новый', when='1_age'),
     MessageInput(age_handler, ContentType.TEXT),
-    state=ProfMenuSG.age,
+    state=ProfSG.age,
     getter=aw_getter)
 
 sex = Window(
@@ -58,15 +58,15 @@ sex = Window(
     Format('Твой пол - {sex}.\n\n Хочешь сменить? Жмякай на кнопки снизу', when='1_sex'),
     Group(Button(Const('М'), id='m_sel', on_click=m_select),
           Button(Const('Ж'), id='w_sel', on_click=w_select)),
-    state=ProfMenuSG.sex,
+    state=ProfSG.sex,
     getter=sw_getter)
 
-loc = Window(
+loc = Window(  # TODO location_text_input
     Const('Тыкни на кнопку и я запишу где ты находишся!', when='0_loc'),
     Format('Ты находишся тут - {loc}. Отправь свою локацию, если хочешь её поменять', when='1_loc'),
     MessageInput(loc_handler, ContentType.LOCATION),
     Group(Button(Const('Жмякай сюда'), id='loc_kbd', on_click=send_loc_kbd)),
-    state=ProfMenuSG.loc,
+    state=ProfSG.loc,
     getter=lw_getter
 )
 
@@ -75,7 +75,7 @@ descr = Window(
     Format('У тебя уже есть описание! Если хочешь его поменять, скинь сообщением новое и я перезапишу\n'
            'Твоё описание - {descr}', when='1_descr'),
     MessageInput(descr_handler, ContentType.TEXT),
-    state=ProfMenuSG.descr,
+    state=ProfSG.descr,
     getter=dw_getter)
 
 prof_dialog = Dialog(main, photo, name, age, sex, loc, descr)

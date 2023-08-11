@@ -1,7 +1,7 @@
 from aiogram.fsm.state import StatesGroup, State
 
 
-class ProfMenuSG(StatesGroup):
+class ProfSG(StatesGroup):
     main = State()
     photo = State()
     name = State()
