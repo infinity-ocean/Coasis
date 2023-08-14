@@ -4,6 +4,9 @@ from redis.asyncio.client import Redis
 
 
 def setup_dispatcher():
-    redis = Redis()
-    dp = Dispatcher(storage=RedisStorage(redis, DefaultKeyBuilder(with_destiny=True)))
+    storage = RedisStorage(
+        redis=Redis(),
+        key_builder=DefaultKeyBuilder(with_destiny=True),
+    )
+    dp = Dispatcher(storage=storage)
     return dp
