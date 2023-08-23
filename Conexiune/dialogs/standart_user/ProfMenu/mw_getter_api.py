@@ -4,7 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from Conexiune.database.tables.tables import User, ProfAdjust
+from Conexiune.database.tables.tables import User
+from database.tables.prof_adjust import ProfAdjust
 
 
 async def select_u(session: AsyncSession, tg_id: int):

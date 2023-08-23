@@ -11,6 +11,7 @@ from Conexiune.dialogs.standart_user.ProfMenu.dialog import prof_dialog
 from Conexiune.handlers.start import start
 from Conexiune.middlewares.registration import db_middleware
 from api import setup_dispatcher
+from dialogs.standart_user.FeedMenu.dialog import feed_dialog
 
 
 # logger = logging.getLogger(__name__)
@@ -26,7 +27,7 @@ async def start_bot():
     engine = create_engine(conf.db.build_connection_str())
     maker = create_session_maker(engine)
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+        # await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     #### bot
     bot = Bot(conf.bot.token)
@@ -36,7 +37,7 @@ async def start_bot():
     dp.message.middleware(db_middleware())
     dp.callback_query.middleware(db_middleware())
     #### dialogs
-    dp.include_router(prof_dialog)
+    dp.include_routers(prof_dialog, feed_dialog)
     setup_dialogs(dp)
     await dp.start_polling(bot, maker=maker)
 
