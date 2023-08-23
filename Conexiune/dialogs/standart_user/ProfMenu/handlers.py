@@ -7,8 +7,8 @@ from aiogram_dialog.widgets.kbd import Button
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from Conexiune.database.tables.tables import ProfAdjust
 from Conexiune.dialogs.standart_user.ProfMenu.states import ProfSG
+from database.tables.prof_adjust import ProfAdjust
 from dialogs.standart_user.ProfMenu.location_api import coords_to_location
 
 
@@ -78,7 +78,7 @@ async def loc_handler(m: Message, MessageInput, manager: DialogManager):
         loc = await coords_to_location(l.latitude, l.longitude)
         upd = update(ProfAdjust).values(location=loc, latitude=l.latitude, longitude=l.longitude).filter(ProfAdjust.user_id == id)
         await session.execute(upd)
-    await m.chat.delete_message(manager.dialog_data['loc_msg_id']) # todo delete a list of messages not only 1
+    await m.chat.delete_message(manager.dialog_data['loc_msg_id']) # todo delete a list of messages instead of 1
     await manager.switch_to(ProfSG.main)
 
 

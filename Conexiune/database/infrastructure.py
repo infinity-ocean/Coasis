@@ -12,4 +12,3 @@ def create_session_maker(engine: AsyncEngine = None) -> async_sessionmaker[Async
         class_=AsyncSession,
         expire_on_commit=False,
     )
-
