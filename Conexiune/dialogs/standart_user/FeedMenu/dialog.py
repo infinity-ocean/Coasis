@@ -27,8 +27,23 @@ w1 = Window(
     getter=getter_w1
 )
 
+w2 = Window(
+    DynamicMedia('photo', when='photo'),
+    Multi(
+        Format('{name}', when='name'),
+        Format('{age}', when='age'),
+        Format('{sex}', when='sex'),
+        Format('{location}', when='location'),
+        Format('{descr}', when='descr'), sep='\n'
+    ),
+    Group(
+        Button(Const('♥'), id='like', on_click=None),
+        SwitchTo(Const('⚙'), id='to_setts', state=FeedSG.settings),
+        SwitchTo(Const('⏭'), id='skip', state=FeedSG.w1),
+        width=2
+    ),
+    state=FeedSG.w2,
+    getter=getter_w1
+)
 
-
-# w2 = Window()
-
-feed_dialog = Dialog(w1)
+feed_dialog = Dialog(w1, w2)
