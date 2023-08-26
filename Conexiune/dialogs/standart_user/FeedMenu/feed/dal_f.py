@@ -1,14 +1,7 @@
-from datetime import datetime, timedelta
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.tables.prof_adjust import ProfAdjust
-
-
-async def less_4h(added_time):
-    elapsed_time = datetime.now() - datetime.fromtimestamp(added_time)
-    return elapsed_time <= timedelta(hours=4)
 
 
 async def get_profiles(

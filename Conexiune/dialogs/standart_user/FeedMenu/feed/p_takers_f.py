@@ -3,7 +3,7 @@ from datetime import datetime
 from aiogram_dialog import DialogManager
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dialogs.standart_user.FeedMenu.getter_api import get_profiles
+from dialogs.standart_user.FeedMenu.feed.dal_f import get_profiles
 
 
 async def slct20_handle_back(session: AsyncSession,
@@ -12,10 +12,10 @@ async def slct20_handle_back(session: AsyncSession,
                              pointer=False):
     #### OFFSET+SLCT
     if offset:
-        p_list: list = await get_profiles(session, offset=data['offset'])
+        p_list: list = await get_profiles(session, offset=data['offset'])  # TODO: handle p nothing
         data['offset'] += 1
     else:
-        p_list: list = await get_profiles(session)
+        p_list: list = await get_profiles(session)  # TODO: handle p nothing
         data['offset'] = 1
     data['profiles'] = []  # CREATION or ANNULMENT
     for p in p_list:
@@ -38,6 +38,5 @@ async def slct_p_ram(data: DialogManager.dialog_data):
         p = data['profiles'][data['pointer']]
         data['pointer'] += 1
         return p
-    except:
+    except:  # TODO: finish
         ...
-

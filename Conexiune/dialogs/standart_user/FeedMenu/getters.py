@@ -1,8 +1,8 @@
 from aiogram.enums import ContentType
 from aiogram_dialog.api.entities import MediaAttachment, MediaId
 
-from dialogs.standart_user.FeedMenu.getter_api import less_4h
-from dialogs.standart_user.FeedMenu.w_api import slct20_handle_back, slct_p_ram
+from dialogs.standart_user.FeedMenu.api_f import less_4h
+from dialogs.standart_user.FeedMenu.feed.p_takers_f import slct20_handle_back, slct_p_ram
 
 
 async def getter_w1(**kwargs):
