@@ -8,7 +8,7 @@ from dialogs.standart_user.FeedMenu.feed.p_takers_f import slct20_handle_back, s
 async def getter_w1(**kwargs):
     dialog_data = kwargs['dialog_manager'].dialog_data
 
-    # before the select -- await get_preferences() -> preferences
+    # TODO!: before the select -- await get_preferences() -> preferences with u_id settle for feed_setts handlers
     if 'time_mark' not in dialog_data:
         p = await slct20_handle_back(kwargs['session'], dialog_data, offset=False)
     else:
