@@ -12,9 +12,6 @@ async def fill_front(fs):
 
 
 async def handle_back(fs, back):
-    if 'u_id' not in back:
-        back['u_id'] = fs.user_fk
-
     if fs.sex:
         back['sex'] = fs.sex
     elif 'sex' in back:

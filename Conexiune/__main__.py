@@ -18,6 +18,7 @@ from dialogs.standart_user.FeedMenu.dialog import feed_dialog
 
 
 async def start_bot():
+    print('play')
     #### inf
     conf = Configuration()
     # logging.basicConfig(level=conf.logging_level,

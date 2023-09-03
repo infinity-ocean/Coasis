@@ -2,7 +2,7 @@ from aiogram.enums import ContentType
 from aiogram_dialog.api.entities import MediaAttachment, MediaId
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import selectinload
 
 from Conexiune.database.tables.user import User
 from database.tables.feed_settings import FeedSettings
@@ -12,9 +12,9 @@ from database.tables.prof_adjust import ProfAdjust
 async def select_u(session: AsyncSession, tg_id: int, user_with: str):
     async with session.begin():
         if user_with == 'ProfAdjust':
-            slct = select(User).where(User.tg_id == tg_id).options(joinedload(User.prof_adj))
+            slct = select(User).where(User.tg_id == tg_id).options(selectinload(User.prof_adj))
         if user_with == 'FeedSettings':
-            slct = select(User).where(User.tg_id == tg_id)
+            slct = select(User).where(User.tg_id == tg_id).options(selectinload(User.feed_setts))
         u = (await session.scalars(slct)).one_or_none()
         return u
 
@@ -25,7 +25,7 @@ async def registrate_u(session: AsyncSession, event, back):  # todo: move to the
         u_reg.prof_adj = ProfAdjust()
         u_reg.feed_setts = FeedSettings()
         await session.merge(u_reg)
-        slct_u_fresh = select(User).where(User.tg_id == event.id).options(joinedload(User.prof_adj))
+        slct_u_fresh = select(User).where(User.tg_id == event.id).options(selectinload(User.prof_adj))
         _u_fresh = await session.scalars(slct_u_fresh)
         u_fresh = _u_fresh.one_or_none()
         back['u_id'] = u_fresh.id

@@ -12,14 +12,14 @@ class FeedSettings(Base):
 
     id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
     user_fk: Mapped[int] = mapped_column(ForeignKey('users.id'), unique=True)
-    user: Mapped['User'] = relationship(
-        uselist=False,
-        cascade='save-update',
-        lazy='joined',
-        back_populates='feed_setts')
+    user_2 = relationship('User',
+                          foreign_keys=user_fk,
+                          lazy='noload',
+                          back_populates='feed_setts',
+                          uselist=False)
     sex: Mapped[Optional[str]] = mapped_column(String(1))
-    min_age: Mapped[Optional[str]] = mapped_column(SmallInteger)
-    max_age: Mapped[Optional[str]] = mapped_column(SmallInteger)
+    min_age: Mapped[Optional[int]] = mapped_column(SmallInteger)
+    max_age: Mapped[Optional[int]] = mapped_column(SmallInteger)
     location: Mapped[Optional[str]] = mapped_column(String(1))
 
     # convert to enum, and in other tables

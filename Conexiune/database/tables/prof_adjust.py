@@ -12,11 +12,11 @@ class ProfAdjust(Base):
 
     id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
     user_fk: Mapped[int] = mapped_column(ForeignKey('users.id'), unique=True)
-    user: Mapped['User'] = relationship(
-        uselist=False,
-        cascade='save-update',
-        lazy='joined',
-        back_populates='prof_adj')
+    user_1 = relationship('User',
+                          foreign_keys=user_fk,
+                          lazy='noload',
+                          back_populates='prof_adj',
+                          uselist=False)
     photo: Mapped[Optional[str]] = mapped_column(String)
     name: Mapped[Optional[str]] = mapped_column(String(50))
     age: Mapped[Optional[int]] = mapped_column(Integer)

@@ -15,13 +15,15 @@ class User(Base):
     username: Mapped[Optional[str]] = mapped_column(String)
     first_name: Mapped[Optional[str]] = mapped_column(String)
     # TODO: to deal up with relationships
-    prof_adj: Mapped['ProfAdjust'] = relationship(
-        uselist=False,
-        cascade='save-update',
-        lazy='joined',
-        back_populates='user')
-    feed_setts: Mapped['FeedSettings'] = relationship(
-        uselist=False,
-        cascade='save-update',
-        lazy='joined',
-        back_populates='user')
+    prof_adj = relationship(
+        'ProfAdjust',
+        foreign_keys='ProfAdjust.user_fk',
+        lazy='noload',
+        back_populates='user_1',
+        uselist=False)
+    feed_setts = relationship(
+        'FeedSettings',
+        foreign_keys='FeedSettings.user_fk',
+        lazy='noload',
+        back_populates='user_2',
+        uselist=False)

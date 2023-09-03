@@ -4,16 +4,16 @@ from aiogram_dialog.widgets.kbd import Group, SwitchTo, Button
 from aiogram_dialog.widgets.media import DynamicMedia
 from aiogram_dialog.widgets.text import Multi, Format, Const
 
+from dialogs.standart_user.FeedMenu.feed.getters import feed_getter
 from dialogs.standart_user.FeedMenu.feed_settings.getters import sex_setts_getter, settings_getter
 from dialogs.standart_user.FeedMenu.feed_settings.handlers import set_m_setts, set_w_setts, clear_sex_setts
-from dialogs.standart_user.FeedMenu.getters import getter_w1
 from dialogs.standart_user.FeedMenu.states import FeedSG
 
 settings = Window(
     Const('Настрой свою ленту ⬇',
-          when=(~F['sex'] & ~F['min_age'] & ~F['max_age'] & ~F['location']
-                )
-          ),
+          when=(
+                  ~F['sex'] & ~F['min_age'] & ~F['max_age'] & ~F['location']
+          )),
     Format('Фильтр на пол: {sex}', when='sex'),
     Group(
         SwitchTo(Const('Пол'), id='to_sex', state=FeedSG.setts_sex),
@@ -26,9 +26,9 @@ settings = Window(
 
 setts_sex = Window(
         Const('Фильтр на пол не поставлен.', when=~F['sex']),
-        Format('Показываю только: {sex}', when=F['sex']),
-        Group(Button(Const('М'), id='m_sel', on_click=set_m_setts),
-              Button(Const('Ж'), id='w_sel', on_click=set_w_setts),
+        Format('Показываю только: {sex}', when='sex'),
+        Group(Button(Const('М'), id='m_slct', on_click=set_m_setts),
+              Button(Const('Ж'), id='w_slct', on_click=set_w_setts),
               Button(Const('Очистить фильтр'), id='clear_sex', on_click=clear_sex_setts)),
         state=FeedSG.setts_sex,
         getter=sex_setts_getter
@@ -50,7 +50,7 @@ w1 = Window(
         width=2
     ),
     state=FeedSG.w1,
-    getter=getter_w1
+    getter=feed_getter
 )
 
 w2 = Window(
@@ -69,7 +69,7 @@ w2 = Window(
         width=2
     ),
     state=FeedSG.w2,
-    getter=getter_w1
+    getter=feed_getter
 )
 
 feed_dialog = Dialog(settings, setts_sex, w1, w2)
