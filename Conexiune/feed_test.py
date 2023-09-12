@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import Configuration
 from database.infrastructure import create_engine, create_session_maker
-from database.tables.tables import ProfAdjust
+from database.tables.user import ProfAdjust
 
 
 async def main():

@@ -4,22 +4,26 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from Conexiune.database.tables.tables import User
+from Conexiune.database.tables.user import User
+from database.tables.feed_settings import FeedSettings
 from database.tables.prof_adjust import ProfAdjust
 
 
-async def select_u(session: AsyncSession, tg_id: int):
+async def select_u(session: AsyncSession, tg_id: int, user_with: str):
     async with session.begin():
-        slct = select(User).where(User.tg_id == tg_id).options(selectinload(User.prof_adj))
-        raw_u = await session.scalars(slct)
-        u = raw_u.one_or_none()
+        if user_with == 'ProfAdjust':
+            slct = select(User).where(User.tg_id == tg_id).options(selectinload(User.prof_adj))
+        if user_with == 'FeedSettings':
+            slct = select(User).where(User.tg_id == tg_id).options(selectinload(User.feed_setts))
+        u = (await session.scalars(slct)).one_or_none()
         return u
 
 
-async def registrate_u(session: AsyncSession, event, back):
+async def registrate_u(session: AsyncSession, event, back):  # todo: move to the mdw; redis flag==1: ...
     async with session.begin():
         u_reg = User(tg_id=event.id, username=event.username, first_name=event.first_name)
         u_reg.prof_adj = ProfAdjust()
+        u_reg.feed_setts = FeedSettings()
         await session.merge(u_reg)
         slct_u_fresh = select(User).where(User.tg_id == event.id).options(selectinload(User.prof_adj))
         _u_fresh = await session.scalars(slct_u_fresh)
@@ -62,7 +66,6 @@ async def fill_front(p):
 async def handle_back(p, back):
     if 'u_id' not in back:
         back['u_id'] = p.user_id
-    # ----------------------------------------------------------------------------- #
     if p.photo:
         back['photo'] = p.photo
     else:

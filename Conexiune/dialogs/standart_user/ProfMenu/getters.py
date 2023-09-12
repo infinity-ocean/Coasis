@@ -9,7 +9,7 @@ async def mw_getter(**kwargs):
     session: AsyncSession = kwargs['session']
     event = kwargs['event_from_user']
     manager = kwargs['dialog_manager']
-    u = await select_u(session, event.id)
+    u = await select_u(session, event.id, 'ProfAdjust')
     if not u:
         await registrate_u(session, event, manager.dialog_data)
         return {'fresh_created': True}
