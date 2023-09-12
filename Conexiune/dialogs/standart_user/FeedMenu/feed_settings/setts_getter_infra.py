@@ -1,4 +1,4 @@
-async def fill_front(fs):
+async def fill_front(fs) -> dict:
     front = {}
     if fs.sex:
         front['sex'] = fs.sex
@@ -11,7 +11,7 @@ async def fill_front(fs):
     return front
 
 
-async def handle_back(fs, back):
+async def handle_back(fs, back) -> None:
     if fs.sex:
         back['sex'] = fs.sex
     elif 'sex' in back:

@@ -9,10 +9,10 @@ async def get_setts(
         session: AsyncSession,
         u_id: int) -> dict:
     async with session.begin():
+        fs = {}
         _fs = await session.scalar(
             select(FeedSettings).filter(FeedSettings.user_fk == u_id)
         )
-        fs = {}
         if _fs.sex:
             fs['sex'] = _fs.sex
         if _fs.min_age:
@@ -26,9 +26,9 @@ async def get_setts(
 
 async def get_profiles(
         session: AsyncSession,
+        sex: str = None,
         min_age=18,
         max_age=60,
-        sex: str = None,
         offset=0
 ):
     async with session.begin():
@@ -37,7 +37,13 @@ async def get_profiles(
             ProfAdjust.age <= max_age).limit(20)
         if sex:
             slct = slct.filter(ProfAdjust.sex == sex)
-        if offset:
+        if offset is not None:
             slct = slct.offset(offset * 20)
         u_list = (await session.scalars(slct)).all()
         return u_list
+
+
+async def get_feed_setts(session: AsyncSession, u_id: int) -> FeedSettings:
+    async with session.begin():
+        slct = select(FeedSettings).filter(FeedSettings.user_fk == u_id)
+        return await session.scalar(slct)

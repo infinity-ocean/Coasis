@@ -1,4 +1,6 @@
-from aiogram.types import CallbackQuery
+import re
+
+from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.kbd import Button
 from sqlalchemy import update
@@ -34,6 +36,21 @@ async def clear_sex_setts(callback: CallbackQuery, button: Button,
     session: AsyncSession = manager.middleware_data['session']
     async with session.begin():
         _id = manager.dialog_data['u_id']
-        exp = update(FeedSettings).values(sex=None).filter(FeedSettings.user_fk == _id)
-        await session.execute(exp)
+        upd = update(FeedSettings).values(sex=None).filter(FeedSettings.user_fk == _id)
+        await session.execute(upd)
     await manager.switch_to(FeedSG.settings)
+
+
+async def age_fs_hndlr(m: Message, MessageInput, manager: DialogManager):
+    if re.match(r'^(1[89]|[2-5][0-9]|60)$', m.text):
+        session: AsyncSession = manager.middleware_data['session']
+        async with session.begin():
+            _id = manager.dialog_data['u_id']
+            if manager.current_context().state == FeedSG.min_age:
+                upd = update(FeedSettings).values(min_age=int(m.text)).filter(FeedSettings.user_fk == _id)
+            else:
+                upd = update(FeedSettings).values(max_age=int(m.text)).filter(FeedSettings.user_fk == _id)
+            await session.execute(upd)
+            await manager.switch_to(FeedSG.settings)
+    else:
+        await m.reply('Неправильный возраст. Принимаются только цифры')
