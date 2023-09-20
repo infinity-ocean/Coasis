@@ -26,8 +26,8 @@ async def slct20_handleback(session: AsyncSession,
         session,
         offset=data['offset'] if offset else None,
         sex=data['setts']['sex'] if 'sex' in data['setts'] else None,
-        min_age=data['setts']['min_age'] if 'min_age' in data['setts'] else None,
-        max_age=data['setts']['max_age'] if 'max_age' in data['setts'] else None,
+        min_age=data['setts']['min_age'] if 'min_age' in data['setts'] else 18,
+        max_age=data['setts']['max_age'] if 'max_age' in data['setts'] else 60,
     )
     ###--------------------------------------------###
     p_0 = p_list[0]  # TODO:Handle: p_list == None

@@ -2,14 +2,14 @@ from aiogram import F
 from aiogram.enums import ContentType
 from aiogram_dialog import Window, Dialog
 from aiogram_dialog.widgets.input import MessageInput
-from aiogram_dialog.widgets.kbd import Group, SwitchTo, Button
+from aiogram_dialog.widgets.kbd import Group, SwitchTo, Button, Cancel
 from aiogram_dialog.widgets.media import DynamicMedia
 from aiogram_dialog.widgets.text import Multi, Format, Const
 
 from dialogs.standart_user.FeedMenu.feed.getters import feed_getter
 from dialogs.standart_user.FeedMenu.feed_settings.getters import sex_setts_getter, settings_getter, age_setts_getter
 from dialogs.standart_user.FeedMenu.feed_settings.handlers import set_m_setts, set_w_setts, clear_sex_setts, \
-    age_fs_hndlr
+    clear_age_setts, age_fs_hndlr
 from dialogs.standart_user.FeedMenu.states import FeedSG
 
 settings = Window(
@@ -45,8 +45,8 @@ setts_sex = Window(
     Format('Показываю только: {sex}', when='sex'),
     Const('Фильтра на пол нету, но ты всегда можешь его поставить.', when=~F['sex']),
     Group(
-        Button(Const('М'), id='m_sex_input', on_click=set_m_setts),
-        Button(Const('Ж'), id='w_sex_input', on_click=set_w_setts),
+        Button(Const('М♂'), id='m_sex_input', on_click=set_m_setts),
+        Button(Const('Ж♀'), id='w_sex_input', on_click=set_w_setts),
         Button(Const('Очистить фильтр'), id='clear_sex', on_click=clear_sex_setts),
         SwitchTo(Const('Назад'), id='sex_setts', state=FeedSG.settings)
     ),
@@ -61,6 +61,7 @@ setts_age = Window(
     Const('Максимальный возраст неограничен', when=~F['max_age'] & F['min_age']),
     Const('Фильтр на возраст не поставлен.', when=~F['min_age'] & ~F['max_age']),
     Group(
+        Button(Const('Очистить фильтр'), id='clear_sex', on_click=clear_age_setts),
         SwitchTo(Const('Поставить минимум'), id='set_min_age', state=FeedSG.min_age),
         SwitchTo(Const('Поставить максимум'), id='set_max_age', state=FeedSG.max_age),
         SwitchTo(Const('Назад'), id='age_setts', state=FeedSG.settings)
@@ -92,6 +93,7 @@ w1 = Window(
         Format('{location}', when='location'),
         Format('{descr}', when='descr'), sep='\n'
     ),
+    Cancel(Const('🧭'), id='w1_menu'),
     Group(
         Button(Const('♥'), id='like', on_click=None),
         SwitchTo(Const('⚙'), id='to_setts', state=FeedSG.settings),
@@ -111,6 +113,7 @@ w2 = Window(
         Format('{location}', when='location'),
         Format('{descr}', when='descr'), sep='\n'
     ),
+    Cancel(Const('🧭'), id='w2_menu'),
     Group(
         Button(Const('♥'), id='like', on_click=None),
         SwitchTo(Const('⚙'), id='to_setts', state=FeedSG.settings),

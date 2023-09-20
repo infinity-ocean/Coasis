@@ -41,6 +41,16 @@ async def clear_sex_setts(callback: CallbackQuery, button: Button,
     await manager.switch_to(FeedSG.settings)
 
 
+async def clear_age_setts(callback: CallbackQuery, button: Button,
+                          manager: DialogManager):
+    session: AsyncSession = manager.middleware_data['session']
+    async with session.begin():
+        _id = manager.dialog_data['u_id']
+        upd = update(FeedSettings).values(min_age=None, max_age=None).filter(FeedSettings.user_fk == _id)
+        await session.execute(upd)
+    await manager.switch_to(FeedSG.settings)
+
+
 async def age_fs_hndlr(m: Message, MessageInput, manager: DialogManager):
     if re.match(r'^(1[89]|[2-5][0-9]|60)$', m.text):
         session: AsyncSession = manager.middleware_data['session']

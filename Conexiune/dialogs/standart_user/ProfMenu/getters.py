@@ -20,7 +20,7 @@ async def mw_getter(**kwargs):
 
 async def pw_getter(**kwargs):
     if 'photo' not in kwargs['dialog_manager'].dialog_data:
-        return {'0_photo': True}
+        return {}
     else:
         img = MediaAttachment(
             ContentType.PHOTO, file_id=MediaId(kwargs['dialog_manager'].dialog_data['photo'])
@@ -30,34 +30,34 @@ async def pw_getter(**kwargs):
 
 async def nw_getter(**kwargs):
     if 'name' not in kwargs['dialog_manager'].dialog_data:
-        return {'0_name': True}
+        return {}
     else:
         return {'name': kwargs['dialog_manager'].dialog_data['name']}
 
 
 async def aw_getter(**kwargs):
     if 'age' not in kwargs['dialog_manager'].dialog_data:  # hide age
-        return {'0_age': True}
+        return {}
     else:  # show age
         return {'age': kwargs['dialog_manager'].dialog_data['age']}
 
 
 async def sw_getter(**kwargs):
     if 'sex' not in kwargs['dialog_manager'].dialog_data:
-        return {'0_sex': True}
+        return {}
     else:
         return {'sex': kwargs['dialog_manager'].dialog_data['sex']}
 
 
 async def lw_getter(**kwargs):
     if 'loc' not in kwargs['dialog_manager'].dialog_data:
-        return {'0_loc': True}
+        return {}
     else:
         return {'loc': kwargs['dialog_manager'].dialog_data['loc']}
 
 
 async def dw_getter(**kwargs):
     if 'descr' not in kwargs['dialog_manager'].dialog_data:
-        return {'0_descr': True}
+        return {}
     else:
         return {'descr': kwargs['dialog_manager'].dialog_data['descr']}
