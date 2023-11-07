@@ -8,7 +8,7 @@ from Conexiune.config import Configuration
 from Conexiune.database.infrastructure import create_engine, create_session_maker
 from Conexiune.database.tables.base import Base
 from Conexiune.handlers.start import start
-from Conexiune.middlewares.registration import db_middleware
+from Conexiune.middlewares.sess_reg_role import db_middleware
 from api import setup_dispatcher
 from dialogs.standart_user.FeedMenu.dialog import feed_dialog
 from dialogs.standart_user.ProfMenu.dialog import prof_dialog
@@ -32,7 +32,7 @@ async def start_bot():
         await conn.run_sync(Base.metadata.create_all)
     #### bot
     bot = Bot(conf.bot.token)
-    dp = setup_dispatcher()
+    dp, redis = setup_dispatcher()
     dp.message.register(start, CommandStart())
     #### mdw
     dp.message.middleware(db_middleware())
@@ -40,7 +40,7 @@ async def start_bot():
     #### dialogs
     dp.include_routers(main_menu, prof_dialog, feed_dialog)
     setup_dialogs(dp)
-    await dp.start_polling(bot, maker=maker)
+    await dp.start_polling(bot, maker=maker, redis=redis)
 
 
 if __name__ == '__main__':

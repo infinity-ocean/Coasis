@@ -1,9 +1,10 @@
 from typing import Optional
 
-from sqlalchemy import BigInteger, String, Integer
+from sqlalchemy import BigInteger, String, Integer, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from Conexiune.database.tables.base import Base
+from enums import Role
 
 
 class User(Base):
@@ -14,7 +15,7 @@ class User(Base):
     tg_id: Mapped[int] = mapped_column(BigInteger, unique=True)
     username: Mapped[Optional[str]] = mapped_column(String)
     first_name: Mapped[Optional[str]] = mapped_column(String)
-    # TODO: to deal up with relationships
+    role: Mapped[Optional] = mapped_column(Enum(Role))
     prof_adj = relationship(
         'ProfAdjust',
         foreign_keys='ProfAdjust.user_fk',
