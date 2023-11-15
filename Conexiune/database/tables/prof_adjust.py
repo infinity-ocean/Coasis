@@ -4,6 +4,7 @@ from sqlalchemy import Integer, ForeignKey, String, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from Conexiune.database.tables.base import Base
+from Conexiune.database.tables.user import User
 
 
 class ProfAdjust(Base):
@@ -12,7 +13,7 @@ class ProfAdjust(Base):
 
     id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
     user_fk: Mapped[int] = mapped_column(ForeignKey('users.id'), unique=True)
-    user_1 = relationship('User',
+    user: Mapped[User] = relationship('User',
                           foreign_keys=user_fk,
                           lazy='noload',
                           back_populates='prof_adj',
