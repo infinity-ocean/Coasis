@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class Role(Enum):
-    default = 0
-    premium = 1
-    moderator = 2
-    admin = 3
+    default = 1
+    premium = 2
+    moderator = 3
+    admin = 4

@@ -28,7 +28,7 @@ async def start_bot():
     engine = create_engine(conf.db.build_connection_str())
     maker = create_session_maker(engine)
     async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     #### bot
     bot = Bot(conf.bot.token)

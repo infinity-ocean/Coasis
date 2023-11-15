@@ -10,9 +10,9 @@ async def mw_getter(**kwargs):
     event = kwargs['event_from_user']
     manager = kwargs['dialog_manager']
     u = await select_u(session, event.id, 'ProfAdjust')
-    if not u:
-        await registrate_u(session, event, manager.dialog_data)
-        return {'fresh_created': True}
+    # if not u:
+    #     await registrate_u(session, event, manager.dialog_data)
+    #     return {'fresh_created': True}
     front = await fill_front(u.prof_adj)
     await handle_back(u.prof_adj, manager.dialog_data)
     return front

@@ -3,8 +3,7 @@ from typing import Optional
 from sqlalchemy import Integer, ForeignKey, String, SmallInteger
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from Conexiune.database.tables.base import Base
-from Conexiune.database.tables.user import User
+from Conexiune.database.tables import Base
 
 
 class FeedSettings(Base):
@@ -13,11 +12,11 @@ class FeedSettings(Base):
 
     id: Mapped[int] = mapped_column(Integer, autoincrement=True, primary_key=True)
     user_fk: Mapped[int] = mapped_column(ForeignKey('users.id'), unique=True)
-    user: Mapped[User] = relationship('User',
-                          foreign_keys=user_fk,
-                          lazy='noload',
-                          back_populates='feed_setts',
-                          uselist=False)
+    user = relationship('User',
+                        foreign_keys=user_fk,
+                        lazy='noload',
+                        back_populates='feed_setts',
+                        uselist=False)
     sex: Mapped[Optional[str]] = mapped_column(String(1))
     min_age: Mapped[Optional[int]] = mapped_column(SmallInteger)
     max_age: Mapped[Optional[int]] = mapped_column(SmallInteger)

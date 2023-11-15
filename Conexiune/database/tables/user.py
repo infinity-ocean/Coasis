@@ -15,16 +15,16 @@ class User(Base):
     tg_id: Mapped[int] = mapped_column(BigInteger, unique=True)
     username: Mapped[Optional[str]] = mapped_column(String)
     first_name: Mapped[Optional[str]] = mapped_column(String)
-    role: Mapped[Optional] = mapped_column(Enum(Role))
+    role: Mapped[Optional[Enum]] = mapped_column(Enum(Role))
     prof_adj = relationship(
         'ProfAdjust',
         foreign_keys='ProfAdjust.user_fk',
         lazy='noload',
-        back_populates='user_1',
+        back_populates='user',
         uselist=False)
     feed_setts = relationship(
         'FeedSettings',
         foreign_keys='FeedSettings.user_fk',
         lazy='noload',
-        back_populates='user_2',
+        back_populates='user',
         uselist=False)
