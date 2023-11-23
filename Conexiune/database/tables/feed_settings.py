@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy import Integer, ForeignKey, String, SmallInteger
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from Conexiune.database.tables import Base
+from .base import Base
 
 
 class FeedSettings(Base):

@@ -3,8 +3,8 @@ from typing import Optional
 from sqlalchemy import Integer, ForeignKey, String, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from Conexiune.database.tables import Base, User
-
+from .base import Base
+from .user import User
 
 class ProfAdjust(Base):
     __tablename__ = 'profiles_adjust'

@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy import BigInteger, String, Integer, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from Conexiune.database.tables.base import Base
+from .base import Base
 from enums import Role
 
 

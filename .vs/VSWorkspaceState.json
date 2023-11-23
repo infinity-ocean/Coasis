@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Conexiune",
+    "\\Conexiune\\database",
+    "\\Conexiune\\database\\tables",
+    "\\Conexiune\\dialogs",
+    "\\Conexiune\\dialogs\\standart_user",
+    "\\Conexiune\\dialogs\\standart_user\\ProfMenu",
+    "\\Conexiune\\handlers",
+    "\\Conexiune\\middlewares"
+  ],
+  "SelectedNode": "\\Conexiune\\middlewares\\sess_reg_role.py",
+  "PreviewInSolutionExplorer": false
+}

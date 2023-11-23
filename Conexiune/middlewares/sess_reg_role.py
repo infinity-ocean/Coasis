@@ -9,7 +9,7 @@ from middlewares.user_redis import role_redis, handle_non_redis
 
 class db_middleware(BaseMiddleware):
     """This middleware throw a Database class to handler"""
-
+    
     async def __call__(
         self,
         handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],

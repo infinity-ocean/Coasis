@@ -4,11 +4,14 @@ from aiogram import Bot
 from aiogram.filters import CommandStart
 from aiogram_dialog import setup_dialogs
 
-from Conexiune.config import Configuration
-from Conexiune.database.infrastructure import create_engine, create_session_maker
-from Conexiune.database.tables.base import Base
-from Conexiune.handlers.start import start
-from Conexiune.middlewares.sess_reg_role import db_middleware
+import sys
+import os
+sys.path.append(os.path.join(sys.path[0], '..'))
+from config import Configuration
+from database.infrastructure import create_engine, create_session_maker
+from database.tables.base import Base
+from handlers.start import start
+from middlewares.sess_reg_role import db_middleware
 from api import setup_dispatcher
 from dialogs.standart_user.FeedMenu.dialog import feed_dialog
 from dialogs.standart_user.ProfMenu.dialog import prof_dialog
