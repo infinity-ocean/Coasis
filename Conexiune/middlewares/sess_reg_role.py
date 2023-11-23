@@ -4,7 +4,7 @@ from aiogram import BaseMiddleware
 from aiogram.types import Message, CallbackQuery
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
-from middlewares.user_redis import role_redis, handle_non_redis
+from middlewares.user_redis import handle_zero_role
 
 
 class db_middleware(BaseMiddleware):
@@ -18,14 +18,13 @@ class db_middleware(BaseMiddleware):
     ) -> Any:
         maker: async_sessionmaker[AsyncSession] = data['maker']
         async with maker() as session:
-            redis = data['redis']
-            role = await role_redis(event.from_user.id, redis)
-            if role:
-                data['role'] = role
+            # ROLE
+            if 'role' in data:
+                pass
             else:
-                role = await handle_non_redis(session, event, redis, data)
+                role = await handle_zero_role(session, event, data)
                 data['role'] = role
-
+            # SESSION
             data['session'] = session
 
             return await handler(event, data)
