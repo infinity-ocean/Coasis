@@ -10,4 +10,4 @@ def setup_dispatcher():
         key_builder=DefaultKeyBuilder(with_destiny=True),
     )
     dp = Dispatcher(storage=storage)
-    return dp, redis
+    return dp

@@ -5,8 +5,6 @@ from dialogs.standart_user.FeedMenu.feed.fill_wrap import slct20_handleback, slc
 async def feed_getter(**kwargs):
     d_data = kwargs['dialog_manager']._data
 
-    print(d_data['role'])
-
     tg_id = kwargs['event_from_user'].id
     if 'setts_changed' in d_data:
         p = await slct20_handleback(kwargs['session'], tg_id, d_data)  ##1 setts_changed: True

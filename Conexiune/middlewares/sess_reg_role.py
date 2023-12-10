@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 from middlewares.user_redis import handle_zero_role
 
 
-class db_middleware(BaseMiddleware):
+class ses_reg_role_mdw(BaseMiddleware):
     """This middleware throw a Database class to handler"""
     
     async def __call__(

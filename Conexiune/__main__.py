@@ -11,7 +11,7 @@ from config import Configuration
 from database.infrastructure import create_engine, create_session_maker
 from database.tables.base import Base
 from handlers.start import start
-from middlewares.sess_reg_role import db_middleware
+from middlewares.sess_reg_role import ses_reg_role_mdw
 from api import setup_dispatcher
 from dialogs.standart_user.FeedMenu.dialog import feed_dialog
 from dialogs.standart_user.ProfMenu.dialog import prof_dialog
@@ -31,19 +31,19 @@ async def start_bot():
     engine = create_engine(conf.db.build_connection_str())
     maker = create_session_maker(engine)
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+        # await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     #### bot
     bot = Bot(conf.bot.token)
-    dp, redis = setup_dispatcher()
+    dp = setup_dispatcher()
     dp.message.register(start, CommandStart())
     #### mdw
-    dp.message.middleware(db_middleware())
-    dp.callback_query.middleware(db_middleware())
+    dp.message.middleware(ses_reg_role_mdw())
+    dp.callback_query.middleware(ses_reg_role_mdw())
     #### dialogs
     dp.include_routers(main_menu, prof_dialog, feed_dialog)
     setup_dialogs(dp)
-    await dp.start_polling(bot, maker=maker, redis=redis)
+    await dp.start_polling(bot, maker=maker)
 
 
 if __name__ == '__main__':

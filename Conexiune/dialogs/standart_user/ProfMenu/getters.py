@@ -2,7 +2,7 @@ from aiogram.enums import ContentType
 from aiogram_dialog.api.entities import MediaAttachment, MediaId
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dialogs.standart_user.ProfMenu.mw_getter_api import select_u, registrate_u, fill_front, handle_back
+from dialogs.standart_user.ProfMenu.mw_getter_api import select_u, fill_front, handle_back
 
 
 async def mw_getter(**kwargs):
@@ -10,11 +10,8 @@ async def mw_getter(**kwargs):
     event = kwargs['event_from_user']
     manager = kwargs['dialog_manager']
     u = await select_u(session, event.id, 'ProfAdjust')
-    # if not u:
-    #     await registrate_u(session, event, manager.dialog_data)
-    #     return {'fresh_created': True}
     front = await fill_front(u.prof_adj)
-    await handle_back(u.prof_adj, manager.dialog_data)
+    await handle_back(u.prof_adj, manager.dialog_data) 
     return front
 
 

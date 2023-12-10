@@ -19,19 +19,6 @@ async def select_u(session: AsyncSession, tg_id: int, user_with: str):
         return u
 
 
-async def registrate_u(session: AsyncSession, event, back):  # todo: move to the mdw; redis flag==1: ...
-    async with session.begin():
-        u_reg = User(tg_id=event.id, username=event.username, first_name=event.first_name)
-        u_reg.prof_adj = ProfAdjust()
-        u_reg.feed_setts = FeedSettings()
-        await session.merge(u_reg)
-        slct_u_fresh = select(User).where(User.tg_id == event.id).options(selectinload(User.prof_adj))
-        _u_fresh = await session.scalars(slct_u_fresh)
-        u_fresh = _u_fresh.one_or_none()
-        back['u_id'] = u_fresh.id
-        return u_fresh
-
-
 async def fill_front(p):
     front = {'one_exists': True}
     if p.photo:
